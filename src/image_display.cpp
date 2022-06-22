@@ -167,8 +167,10 @@ void ImageDisplay::hbmem_topic_callback(
     // 把yuv（1080P）数据发给vot显示
     // 数据结构转换
     memset(&pstVotFrame, 0, sizeof(VOT_FRAME_INFO_S));
-    if (0 == strcmp(reinterpret_cast<char*>(msg->encoding.data()), "bgr8") ||
-      0 == strcmp(reinterpret_cast<char*>(msg->encoding.data()), "rgb8")) {
+    char tmpCoding[12] = {0};
+    snprintf(tmpCoding, sizeof(tmpCoding), "%s", msg->encoding.data());
+    if (0 == strcmp(tmpCoding, "bgr8") ||
+      0 == strcmp(tmpCoding, "rgb8")) {
       if (msg->data_size != nNV12Y_sz * 3) {
         RCLCPP_ERROR(rclcpp::get_logger("hobot_hdmi"), "[%s]->inLen err %d-%d.",
           __func__, msg->data_size, nNV12Y_sz * 3);
@@ -178,11 +180,10 @@ void ImageDisplay::hbmem_topic_callback(
       if (nullptr == mPtrInNv12) {
         mPtrInNv12 = new uint8_t[nNV12Y_sz * 3 / 2];
       }
-      if (0 == strcmp(reinterpret_cast<char*>(msg->encoding.data()), "bgr8")) {
+      if (0 == strcmp(tmpCoding, "bgr8")) {
         video_utils::BGR24_to_NV12(msg->data.data(), mPtrInNv12,
           msg->width, msg->height);
-      } else if (0 == strcmp(reinterpret_cast<char*>(msg->encoding.data()),
-                   "rgb8")) {
+      } else if (0 == strcmp(tmpCoding, "rgb8")) {
         video_utils::RGB24_to_NV12(msg->data.data(), mPtrInNv12,
           msg->width, msg->height);
       }
