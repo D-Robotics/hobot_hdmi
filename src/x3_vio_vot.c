@@ -63,7 +63,7 @@ int x3_vot_init(x3_vot_info_t *vot_info, int nWidth, int nHeight)
     vot_info->m_stLayerAttr = stLayerAttr;
     ROS_printf(0, "stLayer width:%d\n", stLayerAttr.stImageSize.u32Width);
     ROS_printf(0, "stLayer height:%d\n", stLayerAttr.stImageSize.u32Height);
-
+    stLayerAttr.user_control_disp = 1;
     ret = HB_VOT_SetVideoLayerAttr(0, &stLayerAttr);
     if (ret) {
         ROS_printf(0, "HB_VOT_SetVideoLayerAttr failed.\n");
@@ -71,24 +71,20 @@ int x3_vot_init(x3_vot_info_t *vot_info, int nWidth, int nHeight)
     }
 
     // 缩放 begin
-    VOT_UPSCALE_ATTR_S stUpScale;
-    ret = HB_VOT_GetVideoLayerUpScale(0, &stUpScale);
-    if (ret) {
-        ROS_printf(0, "HB_VOT_GetVideoLayerUpScale failed.\n");
-    }
-    ROS_printf(2, "stUpScale src width :%d\n", stUpScale.src_width);
-    ROS_printf(2, "stUpScale src height :%d\n", stUpScale.src_height);
-    ROS_printf(2, "stUpScale tgt width :%d\n", stUpScale.tgt_width);
-    ROS_printf(2, "stUpScale tgt height :%d\n", stUpScale.tgt_height);
-    ROS_printf(2, "stUpScale pos x :%d\n", stUpScale.pos_x);
-    ROS_printf(2, "stUpScale pos y :%d\n", stUpScale.pos_y);
-    stUpScale.src_width = nWidth;
-    stUpScale.src_height = nHeight;
-    stUpScale.tgt_width = 1920;
-    stUpScale.tgt_height = 1080;
-    ret = HB_VOT_SetVideoLayerUpScale(0, &stUpScale);
-    if (ret) {
-        ROS_printf(0, "HB_VOT_SetVideoLayerUpScale failed.\n");
+    if (nWidth != 1920 || nHeight != 1080) {
+        VOT_UPSCALE_ATTR_S stUpScale;
+        ret = HB_VOT_GetVideoLayerUpScale(0, &stUpScale);
+        if (ret) {
+            ROS_printf(0, "HB_VOT_GetVideoLayerUpScale failed.\n");
+        }
+        stUpScale.src_width = nWidth;
+        stUpScale.src_height = nHeight;
+        stUpScale.tgt_width = 1920;
+        stUpScale.tgt_height = 1080;
+        ret = HB_VOT_SetVideoLayerUpScale(0, &stUpScale);
+        if (ret) {
+            ROS_printf(0, "HB_VOT_SetVideoLayerUpScale failed.\n");
+        }
     }
     // 缩放 end
     ret = HB_VOT_EnableVideoLayer(0);
