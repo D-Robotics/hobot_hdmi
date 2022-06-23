@@ -61,8 +61,8 @@ int x3_vot_init(x3_vot_info_t *vot_info, int nWidth, int nHeight)
         goto err;
     }
     vot_info->m_stLayerAttr = stLayerAttr;
-    ROS_printf(0, "stLayer width:%d\n", stLayerAttr.stImageSize.u32Width);
-    ROS_printf(0, "stLayer height:%d\n", stLayerAttr.stImageSize.u32Height);
+    ROS_printf(2, "stLayer width:%d\n", stLayerAttr.stImageSize.u32Width);
+    ROS_printf(2, "stLayer height:%d\n", stLayerAttr.stImageSize.u32Height);
     stLayerAttr.user_control_disp = 1;
     ret = HB_VOT_SetVideoLayerAttr(0, &stLayerAttr);
     if (ret) {

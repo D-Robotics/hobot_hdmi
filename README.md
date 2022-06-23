@@ -87,7 +87,7 @@ SHARED_MEM
 export COLCON_CURRENT_PREFIX=./install
 source ./install/local_setup.sh
 # 发布图片数据
-ros2 run mipi_cam mipi_cam --ros-args -p io_method:=shared_mem
+ros2 run mipi_cam mipi_cam --ros-args -p io_method:=shared_mem -p out_format:=nv12
 # 指明topic 为 hbmem_img，接收 发布端通过share mem pub 的数据：
 ros2 run hobot_hdmi hobot_hdmi --ros-args -p sub_img_topic:=/hbmem_img -p io_method:=shared_mem
 ```
