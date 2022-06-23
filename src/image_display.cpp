@@ -41,6 +41,7 @@ extern "C" int ROS_printf(int nLevel, char *fmt, ...)
   }
 
   va_end(args);
+  return 0;
 }
 
 int vot_param_init(x3_vot_info_t *vot_info, int nPicWidth, int nPicHeight)
@@ -155,7 +156,7 @@ void ImageDisplay::hbmem_topic_callback(
     if (0 == x3_vot_init(&m_vot_info, m_nShowWidth, m_nShowHeight))
       m_nVotSt = 1;
   } else {
-    int nNV12Y_sz = msg->width * msg->height;
+    unsigned int nNV12Y_sz = msg->width * msg->height;
     VOT_FRAME_INFO_S pstVotFrame;
     if (msg->width != m_nShowWidth ||
       msg->height != m_nShowHeight) {
@@ -216,7 +217,7 @@ void ImageDisplay::topic_callback(
       m_nVotSt = 1;
   } else {
     VOT_FRAME_INFO_S pstVotFrame;
-    int nNV12Y_sz = msg->width * msg->height;
+    unsigned int nNV12Y_sz = msg->width * msg->height;
     if (msg->width != m_nShowWidth ||
       msg->height != m_nShowHeight) {
         RCLCPP_ERROR(rclcpp::get_logger("hobot_hdmi"), "[%s]->inWh err %d-%d.",

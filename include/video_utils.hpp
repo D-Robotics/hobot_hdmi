@@ -80,7 +80,7 @@ inline void NV12_TO_BGR24(unsigned char *_src, unsigned char* pUv,
 
   // int width2 = width >> 1;
   int width3 = (width << 2) - width;
-  int width9 = (width << 3) + width;
+  // int width9 = (width << 3) + width;
   unsigned char *RGBOut1 = RGBOut;
   unsigned char *RGBOut2 = RGBOut1 + width3;
   // unsigned char *RGBOut1 = RGBOut + 3 * width * (height - 2);
@@ -182,7 +182,7 @@ inline void NV12_TO_RGB24(unsigned char *_src, unsigned char* pUv,
   uint8x8_t UV_SUBvec = vld1_u8(UV_SUBS);
 
   int width3 = (width << 2) - width;
-  int width9 = (width << 3) + width;
+  // int width9 = (width << 3) + width;
   unsigned char *RGBOut1 = RGBOut;
   unsigned char *RGBOut2 = RGBOut1 + width3;
   unsigned char tempUV[8];

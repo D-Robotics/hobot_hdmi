@@ -36,6 +36,6 @@ int x3_vot_init(x3_vot_info_t*, int nWidth, int nHeight);
 int x3_vot_deinit(x3_vot_info_t*);
 
 #ifdef __cplusplus
-};
+}
 #endif  /* __cplusplus */
 #endif  // HOBOT_HDMI_INCLUDE_X3_VIO_VOT_H_

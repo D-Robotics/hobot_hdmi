@@ -58,8 +58,8 @@ class ImageDisplay : public rclcpp::Node {
   int sub_img_frameCount_ = 0;
   std::mutex frame_stat_mtx_;
   std::mutex          m_MtxPutFrame;
-  int m_nShowWidth;
-  int m_nShowHeight;
+  unsigned int m_nShowWidth;
+  unsigned int m_nShowHeight;
 
   // latency
   // 滑动窗口测方差 ， 20 s ，标准帧率 ,只测试原始图
