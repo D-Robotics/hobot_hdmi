@@ -30,7 +30,7 @@ hbm_img_msgs为自定义消息格式，用于发布shared memory类型图像数�
 
 SHARED_MEM
 
-- shared mem（共享内存传输）使能开关，默认关闭（OFF），编译时使用-DBUILD_HBMEM=ON命令打开。
+- shared mem（共享内存传输）使能开关，默认关闭（ON），编译时使用-DBUILD_HBMEM=OFF命令打开。
 - 如果打开，编译和运行会依赖hbm_img_msgs pkg，并且需要使用tros进行编译。
 - 如果关闭，编译和运行不依赖hbm_img_msgs pkg，支持使用原生ros和tros进行编译。
 
@@ -42,9 +42,9 @@ SHARED_MEM
 - 已依赖pkg ，详见 Dependency 部分
 
 2、编译：
-  - 订阅share mem 方式发布的图片：`colcon build --packages-select hobot_hdmi --cmake-args -DBUILD_HBMEM=ON`
+  - 订阅share mem 方式发布的图片：`colcon build --packages-select hobot_hdmi`
   这个需要先配置 TROS 环境，例如：`source /opt/tros/setup.bash`
-  - 支持订阅ROS2标准格式图片：`colcon build --packages-select hobot_hdmi`或`colcon build --packages-select hobot_hdmi --cmake-args -DBUILD_HBMEM=OFF`。
+  - 支持订阅ROS2标准格式图片：`colcon build --packages-select hobot_hdmi --cmake-args -DBUILD_HBMEM=OFF`。
 
 ### docker交叉编译
 
@@ -67,8 +67,7 @@ SHARED_MEM
      --cmake-force-configure \
      --cmake-args \
      --no-warn-unused-cli \
-     -DCMAKE_TOOLCHAIN_FILE=`pwd`/robot_dev_config/aarch64_toolchainfile.cmake \
-     -DBUILD_HBMEM=ON
+     -DCMAKE_TOOLCHAIN_FILE=`pwd`/robot_dev_config/aarch64_toolchainfile.cmake
   ```
 - 其中SYS_ROOT为交叉编译系统依赖路径，此路径具体地址详见第1步“编译环境确认”的交叉编译说明。
 
