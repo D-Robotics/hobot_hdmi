@@ -15,7 +15,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
-
 def generate_launch_description():
     return LaunchDescription([
         # 启动图片发布pkg
@@ -25,22 +24,22 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {"out_format": "nv12"},
-                {"image_width": 960},
-                {"image_height": 544},
+                {"image_width": 1920},
+                {"image_height": 1080},
                 {"io_method": "shared_mem"},
-                {"video_device": "F37"}
+                {"video_device": "IMX415"}
             ],
             arguments=['--ros-args', '--log-level', 'error']
         ),
-        # 启动jpeg图片编码&发布pkg
+        # 启动HDMI图像显示pkg
         Node(
-            package='image_display',
-            executable='image_display',
+            package='hobot_hdmi',
+            executable='hobot_hdmi',
             output='screen',
             parameters=[
-                {"in_method": "shared_mem"},
-                {"sub_topic": "/hbmem_img"}
+                {"io_method": "shared_mem"},
+                {"sub_img_topic": "/hbmem_img"},
             ],
             arguments=['--ros-args', '--log-level', 'error']
-        )
+        ),
     ])
