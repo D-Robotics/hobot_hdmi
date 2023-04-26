@@ -12,24 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from ament_index_python import get_package_share_directory
+
 
 def generate_launch_description():
     return LaunchDescription([
         # 启动图片发布pkg
-        Node(
-            package='mipi_cam',
-            executable='mipi_cam',
-            output='screen',
-            parameters=[
-                {"out_format": "nv12"},
-                {"image_width": 1920},
-                {"image_height": 1080},
-                {"io_method": "shared_mem"},
-                {"video_device": "IMX415"}
-            ],
-            arguments=['--ros-args', '--log-level', 'error']
+        DeclareLaunchArgument(
+            'device',
+            default_value='F37',
+            description='mipi camera device'),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(
+                    get_package_share_directory('mipi_cam'),
+                    'launch/mipi_cam.launch.py')),
+            launch_arguments={
+                'mipi_image_width': '1920',
+                'mipi_image_height': '1080',
+                'mipi_io_method': 'shared_mem',
+                'mipi_video_device': LaunchConfiguration('device')
+            }.items()
         ),
         # 启动HDMI图像显示pkg
         Node(
