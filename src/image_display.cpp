@@ -110,16 +110,14 @@ ImageDisplay::ImageDisplay(const rclcpp::NodeOptions& node_options,
         topic_name_, 10,
         std::bind(&ImageDisplay::topic_callback, this, std::placeholders::_1));
   } else {
-#ifdef USING_HBMEM
     hbmem_subscription_ =
-        this->create_subscription_hbmem<hbm_img_msgs::msg::HbmMsg1080P>(
+        this->create_subscription<hbm_img_msgs::msg::HbmMsg1080P>(
             topic_name_, 10,
             std::bind(&ImageDisplay::hbmem_topic_callback,
                       this, std::placeholders::_1));
     RCLCPP_WARN(rclcpp::get_logger("hobot_hdmi"),
       "Create hbmem_subscription with topic_name: %s, sub = %p",
        topic_name_.c_str(), hbmem_subscription_);
-#endif
   }
 }
 
@@ -144,7 +142,6 @@ int32_t tool_calc_time_laps(
   return nRetMs;
 }
 
-#ifdef USING_HBMEM
 void ImageDisplay::hbmem_topic_callback(
     const hbm_img_msgs::msg::HbmMsg1080P::ConstSharedPtr msg) {
   // 判断格式，是 bgr8,nv12 ,rgb8
@@ -203,7 +200,6 @@ void ImageDisplay::hbmem_topic_callback(
   m_MtxPutFrame.unlock();
   return;
 }
-#endif
 
 void ImageDisplay::topic_callback(
        const sensor_msgs::msg::Image::ConstSharedPtr msg) {

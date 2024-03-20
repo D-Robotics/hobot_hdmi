@@ -59,10 +59,7 @@ colcon build --packages-select hobot_hdmi \
 
 ## 注意事项
 
-1、shared mem（共享内存传输）使能开关，默认关闭（OFF），编译时使用-DBUILD_HBMEM=ON命令打开。
-   - 如果打开，编译和运行会依赖hbm_img_msgs pkg，并且需要使用tros进行编译。
-   - 如果关闭，编译和运行不依赖hbm_img_msgs pkg，支持使用原生ros和tros进行编译。
-2、已编译hbm_img_msgs package
+1、已编译hbm_img_msgs package
 
 
 # 使用介绍

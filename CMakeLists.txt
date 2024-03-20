@@ -29,12 +29,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-OPTION(BUILD_HBMEM    "BUILD_HBMEM work environment"    ON)
-
-if(BUILD_HBMEM)
-add_definitions(-DUSING_HBMEM)
 find_package(hbm_img_msgs REQUIRED)
-endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -52,11 +47,9 @@ ${PROJECT_SOURCE_DIR}
 link_directories(
   ${CMAKE_SYSROOT}/usr/lib/hbmedia
 )
-if(BUILD_HBMEM)
 link_directories(
   ${CMAKE_SYSROOT}/usr/lib/
 )
-endif()
 
 add_executable(hobot_hdmi
 src/example.cpp
@@ -64,9 +57,8 @@ src/image_display.cpp
 src/x3_vio_vot.c
 )
 
-if(BUILD_HBMEM)
 target_link_libraries(hobot_hdmi
-  hbmem isp_algo z hbmedia iar isp ion vio tinyalsa
+  isp_algo z hbmedia iar isp ion vio tinyalsa
 )
 ament_target_dependencies(
   hobot_hdmi
@@ -74,17 +66,6 @@ ament_target_dependencies(
   sensor_msgs
   hbm_img_msgs
 )
-else()
-target_link_libraries(hobot_hdmi
- isp_algo z hbmedia iar isp ion vio tinyalsa
-)
-
-ament_target_dependencies(
-  hobot_hdmi
-  rclcpp
-  sensor_msgs
-)
-endif()
 
 # Install executables
 install(
