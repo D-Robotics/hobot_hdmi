@@ -49,7 +49,7 @@ Compilation command: `colcon build --packages-select hobot_hdmi`
 export TARGET_ARCH=aarch64
 export TARGET_TRIPLE=aarch64-linux-gnu
 export CROSS_COMPILE=/usr/bin/$TARGET_TRIPLE-
-``````
+
 colcon build --packages-select hobot_hdmi \
    --merge-install \
    --cmake-force-configure \
@@ -101,7 +101,7 @@ To start using launch file:
 export COLCON_CURRENT_PREFIX=./install
 source ./install/setup.bash
 
-```# Launch file for starting
+# Launch file for starting
 ros2 launch install/share/hobot_hdmi/launch/hobot_hdm.launch.py
 
 ```
