@@ -112,7 +112,7 @@ ImageDisplay::ImageDisplay(const rclcpp::NodeOptions& node_options,
   } else {
     hbmem_subscription_ =
         this->create_subscription<hbm_img_msgs::msg::HbmMsg1080P>(
-            topic_name_, 10,
+            topic_name_, rclcpp::SensorDataQoS(),
             std::bind(&ImageDisplay::hbmem_topic_callback,
                       this, std::placeholders::_1));
     RCLCPP_WARN(rclcpp::get_logger("hobot_hdmi"),
