@@ -77,7 +77,7 @@ colcon build --packages-select hobot_hdmi \
 
 ## Execution
 
-After successful compilation, copy the generated install path to the Horizon X3 development board (if compiling on X3, ignore the copying step), and run the following command:
+After successful compilation, copy the generated install path to the RDK X3 development board (if compiling on X3, ignore the copying step), and run the following command:
 
 ### **Ubuntu**
 

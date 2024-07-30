@@ -4,7 +4,7 @@
   <name>hobot_hdmi</name>
   <version>2.1.0</version>
   <description>TogetheROS image display through hdmi</description>
-  <maintainer email="wenli.wu@horizon.ai">wuwenli</maintainer>
+  <maintainer email="wenli.wu@d-robotics.cc">wuwenli</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
