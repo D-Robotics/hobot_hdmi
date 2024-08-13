@@ -16,7 +16,8 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-#include "include/image_display.h"
+
+#include "image_display_node.h"
 
 int main(int argc, char** argv) {
   rclcpp::init(argc, argv);

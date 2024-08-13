@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "include/image_display.h"
-
 #include <stdarg.h>
 #include <string>
 #include <fstream>
 
-#include "include/x3_vio_vot.h"
 #include "rclcpp/rclcpp.hpp"
-#include "include/video_utils.hpp"
+
+#include "x3_vio_vot.h"
+#include "video_utils.hpp"
+#include "image_display_node.h"
 
 extern "C" int ROS_printf(int nLevel, char *fmt, ...)
 {
@@ -95,19 +95,19 @@ int vot_param_init(x3_vot_info_t *vot_info, int nPicWidth, int nPicHeight)
 ImageDisplay::ImageDisplay(const rclcpp::NodeOptions& node_options,
   std::string node_name, std::string topic_name)
     : Node(node_name, node_options) {
-  this->declare_parameter("sub_img_topic", topic_name_);
-  this->get_parameter("sub_img_topic", topic_name_);
+  this->declare_parameter("ros_img_sub_topic_name", topic_name_);
+  this->get_parameter("ros_img_sub_topic_name", topic_name_);
   if (!topic_name.empty()) {
     topic_name_ = topic_name;
   }
 
-  this->declare_parameter("io_method", _io_mode);
-  get_parameter("io_method", _io_mode);
+  this->declare_parameter("is_shared_mem", _io_mode);
+  get_parameter("is_shared_mem", _io_mode);
   RCLCPP_WARN(rclcpp::get_logger("hobot_hdmi"),
-    "Create topic: %s,io=%s.", topic_name_.c_str(), _io_mode.c_str());
-  if (0 != _io_mode.compare("shared_mem")) {
+    "Create topic: %s,io=%s.", topic_name_.c_str(), _io_mode);
+  if (_io_mode) {
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-        topic_name_, 10,
+        "/hbmem_img", 10,
         std::bind(&ImageDisplay::topic_callback, this, std::placeholders::_1));
   } else {
     hbmem_subscription_ =
