@@ -10,15 +10,17 @@ The hobot_hdmi package is used to display image messages published by a ROS2 Nod
 
 - sensor_msgs
 - hbm_img_msgs
+- cv_bridge
+- hobot_cv
 
 hbm_img_msgs is a custom message format used for publishing shared memory type image data, defined in hobot_msgs.
 
 ## Development Environment
 
 - Programming Language: C/C++
-- Development Platform: X3/X86
-- System Version: Ubuntu 20.0.4
-- Compilation Toolchain: Linux GCC 9.3.0/Linaro GCC 9.3.0
+- Development Platform: X3/X5/X86
+- System Version: Ubuntu 20.04/22.04
+- Compilation Toolchain: Linux GCC 9.3.0/Linaro GCC 11.4.0
 
 ## Compilation
 
@@ -62,6 +64,16 @@ colcon build --packages-select hobot_hdmi \
 
 1. hbm_img_msgs package has been compiled.
 
+2. start devices before use X5 hdmi display.
+```shell
+modprobe panel-jc-050hd134
+modprobe vio_n2d
+modprobe lontium_lt8618
+modprobe vs-x5-syscon-bridge
+modprobe vs_drm
+
+cp -r install/lib/hobot_hdmi/config .
+```
 
 # Instructions
 
@@ -71,13 +83,13 @@ colcon build --packages-select hobot_hdmi \
 
 | Parameter   | Meaning              | Value                         | Default               |
 | ----------- | -------------------- | ----------------------------- | --------------------- |
-| sub_img_topic   | Subscribed Image Topic | String                    |      image_raw       |
-| io_method   | Data Transfer Method    | String, supports only "ros/shared_mem" |      ros          |
+| ros_img_sub_topic_name   | Subscribed Ros Image Topic | String                    |      image_raw       |
+| is_shared_mem   | Data Transfer Method    | true: zero copy, false: Ros image topic |      false          |
 
 
 ## Execution
 
-After successful compilation, copy the generated install path to the RDK X3 development board (if compiling on X3, ignore the copying step), and run the following command:
+After successful compilation, copy the generated install path to the Horizon X3 development board (if compiling on X3, ignore the copying step), and run the following command:
 
 ### **Ubuntu**
 
@@ -91,7 +103,7 @@ source ./install/setup.bash
 ros2 run mipi_cam mipi_cam --ros-args -p io_method:=shared_mem -p out_format:=nv12
 
 # Specify topic as hbmem_img, receive data published by the publishing end through share mem pub:
-ros2 run hobot_hdmi hobot_hdmi --ros-args -p sub_img_topic:=/hbmem_img -p io_method:=shared_mem
+ros2 run hobot_hdmi hobot_hdmi --ros-args -p is_shared_mem:=true
 
 ```
 
@@ -116,7 +128,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:./install/lib/
 /userdata/install/lib/mipi_cam/mipi_cam --ros-args -p io_method:=shared_mem
 
 # Specify topic as hbmem_img, receive data published by share mem pub
-/userdata/install/lib/hobot_hdmi/hobot_hdmi --ros-args -p sub_img_topic:=hbmem_img -p io_method:=shared_mem
+/userdata/install/lib/hobot_hdmi/hobot_hdmi --ros-args -p is_shared_mem:=true
 
 ```
 
