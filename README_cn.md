@@ -12,24 +12,26 @@ hobot_hdmi package用于通过 HDMI 显示接收 ROS2 Node 发布的image msg。
 
 - sensor_msgs
 - hbm_img_msgs
+- cv_bridge
+- hobot_cv
 
 hbm_img_msgs为自定义消息格式，用于发布shared memory类型图像数据，定义在hobot_msgs中。
 
 ## 开发环境
 
 - 编程语言: C/C++
-- 开发平台: X3/X86
-- 系统版本：Ubuntu 20.0.4
-- 编译工具链:Linux GCC 9.3.0/Linaro GCC 9.3.0
+- 开发平台: X3/X5/X86
+- 系统版本：Ubuntu 20.04/Ubuntu 22.0.4
+- 编译工具链:Linux GCC 9.3.0/Linaro GCC 11.4.0
 
 ## 编译
 
- 支持在X3 Ubuntu系统上编译和在PC上使用docker交叉编译两种方式。
+ 支持在X3/X5 Ubuntu系统上编译和在PC上使用docker交叉编译两种方式。
 
 ### Ubuntu板端编译
 
 1. 编译环境确认 
-   - 板端已安装X3 Ubuntu系统。
+   - 板端已安装X3/X5 Ubuntu系统。
    - 当前编译终端已设置TogetherROS环境变量：`source PATH/setup.bash`。其中PATH为TogetherROS的安装路径。
    - 已安装ROS2编译工具colcon，安装命令：`pip install -U colcon-common-extensions`
 2. 编译
@@ -63,6 +65,17 @@ colcon build --packages-select hobot_hdmi \
 
 1、已编译hbm_img_msgs package
 
+2、使用X5 hdmi display 功能时, 需要进行如下操作
+
+```shell
+modprobe panel-jc-050hd134
+modprobe vio_n2d
+modprobe lontium_lt8618
+modprobe vs-x5-syscon-bridge
+modprobe vs_drm
+
+cp -r install/lib/hobot_hdmi/config .
+```
 
 # 使用介绍
 
@@ -72,8 +85,8 @@ colcon build --packages-select hobot_hdmi \
 
 | 参数名      | 含义                 | 取值                          | 默认值                |
 | ----------- | -------------------- | ----------------------------- | --------------------- |
-| sub_img_topic   | 订阅图片主题      | 字符串                         |      image_raw       |
-| io_method   | 传输数据方式          | 字符串，只支持 "ros/shared_mem"    |      ros          |
+| ros_img_sub_topic_name   | 订阅Ros图片话题      | 字符串                         |      image_raw       |
+| is_shared_mem   | 传输数据方式          | true: 零拷贝, false: Ros话题    |      false          |
 
 
 ## 运行
@@ -92,7 +105,7 @@ source ./install/setup.bash
 ros2 run mipi_cam mipi_cam --ros-args -p io_method:=shared_mem -p out_format:=nv12
 
 # 指明topic 为 hbmem_img，接收 发布端通过share mem pub 的数据：
-ros2 run hobot_hdmi hobot_hdmi --ros-args -p sub_img_topic:=/hbmem_img -p io_method:=shared_mem
+ros2 run hobot_hdmi hobot_hdmi --ros-args -p is_shared_mem:=true
 
 ```
 运行方式2，使用launch文件启动：
@@ -115,7 +128,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:./install/lib/
 /userdata/install/lib/mipi_cam/mipi_cam --ros-args -p io_method:=shared_mem
 
 # 指明topic 为 hbmem_img，接收 发布端通过share mem pub 的数据
-/userdata/install/lib/hobot_hdmi/hobot_hdmi --ros-args -p sub_img_topic:=hbmem_img -p io_method:=shared_mem
+/userdata/install/lib/hobot_hdmi/hobot_hdmi --ros-args -p is_shared_mem:=true
 
 ```
 

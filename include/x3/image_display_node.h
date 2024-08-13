@@ -1,4 +1,4 @@
-// Copyright (c) 2022，Horizon Robotics.
+// Copyright (c) 2024，D-Robotics.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 
 #include "hbm_img_msgs/msg/hbm_msg1080_p.hpp"
 
-#include "include/x3_vio_vot.h"
+#include "x3_vio_vot.h"
 
 #ifndef HOBOT_HDMI_INCLUDE_IMAGE_DISPLAY_H_
 #define HOBOT_HDMI_INCLUDE_IMAGE_DISPLAY_H_
@@ -46,7 +46,7 @@ class ImageDisplay : public rclcpp::Node {
   // 目前只支持订阅原图，可以使用压缩图"/image_raw/compressed" topic
   // 和sensor_msgs::msg::CompressedImage格式扩展订阅压缩图
   std::string topic_name_ = "/image_raw";
-  std::string _io_mode = "ros";
+  bool _io_mode = false;
   rclcpp::Subscription<hbm_img_msgs::msg::HbmMsg1080P>::SharedPtr
       hbmem_subscription_;
 

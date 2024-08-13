@@ -1,4 +1,4 @@
-// Copyright (c) 2022，Horizon Robotics.
+// Copyright (c) 2024，D-Robotics.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-#include "include/image_display.h"
+
+#include "image_display_node.h"
 
 int main(int argc, char** argv) {
   rclcpp::init(argc, argv);
