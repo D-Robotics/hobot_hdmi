@@ -163,7 +163,7 @@ void ImageDisplay::RosImgProcess(
     BGRToNv12(bgr_mat, nv12_mat);
     nv12_data = reinterpret_cast<char*>(nv12_mat.data);
   } else if ("nv12" == img_msg->encoding) {  // nv12格式使用hobotcv resize
-    nv12_data = nv12_data = reinterpret_cast<char*>(const_cast<unsigned char*>(img_msg->data.data()));
+    nv12_data = reinterpret_cast<char*>(const_cast<unsigned char*>(img_msg->data.data()));
   }
 
   int ret = 0;
@@ -192,24 +192,6 @@ int ImageDisplay::FeedFromLocal() {
         "Fill buffer failed!");
   }
   std::free(nv12_data);
-
-  uint8_t *rgb_data = static_cast<uint8_t*>(std::malloc(512 * 512 * 3));
-  for (size_t i = 0; i < 512 * 256; ++i) {
-      rgb_data[i * 3] = 0;   // 红色通道
-      rgb_data[i * 3 + 1] = 255; // 绿色通道
-      rgb_data[i * 3 + 2] = 255; // 蓝色通道
-  } 
-  for (size_t i = 512 * 256; i < 512 * 512; ++i) {
-      rgb_data[i * 3] = 255;   // 红色通道
-      rgb_data[i * 3 + 1] = 0; // 绿色通道
-      rgb_data[i * 3 + 2] = 0; // 蓝色通道
-  }
-  // ret = display_framework_->FillBuffer(40, rgb_data);
-  if(ret != 0) {
-    RCLCPP_ERROR(rclcpp::get_logger("hobot_hdmi"),
-        "Fill buffer failed!");
-  }
-  std::free(rgb_data);
  return 0; 
 }
 
