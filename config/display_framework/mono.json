@@ -16,19 +16,6 @@
             "z_pos": 0,
             "alpha": 65535,
             "pixel_blend_mode": 1
-        },
-        {
-            "plane_id": 40,
-            "src_w": 512,
-            "src_h": 512,
-            "crtc_x": 704,
-            "crtc_y": 284,
-            "crtc_w": 512,
-            "crtc_h": 512,
-            "format": "RG24",
-            "z_pos": 1,
-            "alpha": 32768,
-            "pixel_blend_mode": 1
         }
     ]
 }
