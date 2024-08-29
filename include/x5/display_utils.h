@@ -65,11 +65,7 @@ void drm_cleanup(x5_drm_context_t *ctx);
 void drm_set_client_capabilities(int drm_fd);
 int drm_setup_kms(x5_drm_context_t *ctx);
 int drm_display_frame(x5_drm_context_t *ctx, int dma_buf_fds[MAX_PLANES]);
-int drm_display_frame_non_zero_copy(x5_drm_context_t *ctx, uint8_t *src_data, int plane_index);
-int get_nv12_frame(x5_drm_context_t *ctx, const uint8_t *nv12_data, const int width, const int height);
 
-int create_and_map_nv12_buffer(x5_drm_context_t *ctx, int width, int height, void **mapped_memory, int *dma_buf_fd);
-void update_nv12_buffer(void *mapped_memory, const uint8_t *nv12_data, const int width, const int height);
 int create_and_map_buffer(x5_drm_context_t *ctx, int plane_index, void **mapped_memory, int *dma_buf_fd);
 
 #endif // DISPLAY_UTILS_H

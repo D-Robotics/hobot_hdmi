@@ -102,11 +102,14 @@ int DisplayFramework::FillBuffer(int plane_id, uint8_t *data) {
     const size_t nv12_size = y_plane_size + uv_plane_size;
     memcpy(frame->mapped_memory, data, nv12_size);
   } else if (strcmp(frame->format, "RG24") == 0 || 
-    strcmp(frame->format, "AR24") == 0 ||
-    strcmp(frame->format, "RA24") == 0 ||
-    strcmp(frame->format, "BG24") == 0 ||
-    strcmp(frame->format, "BA24") == 0) {
+    strcmp(frame->format, "BG24") == 0) {
     const size_t size = frame->width * frame->height * 3;
+    memcpy(frame->mapped_memory, data, size);
+  } else if (strcmp(frame->format, "AR24") == 0 ||
+    strcmp(frame->format, "RA24") == 0 ||
+    strcmp(frame->format, "BA24") == 0 ||
+    strcmp(frame->format, "AB24") == 0) {
+    const size_t size = frame->width * frame->height * 4;
     memcpy(frame->mapped_memory, data, size);
   } else if (strcmp(frame->format, "RG16") == 0 || 
     strcmp(frame->format, "BG16") == 0) {

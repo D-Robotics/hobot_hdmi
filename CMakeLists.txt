@@ -35,6 +35,7 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(ai_msgs REQUIRED)
 find_package(hbm_img_msgs REQUIRED)
 find_package(hobot_cv REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -86,6 +87,7 @@ if(PLATFORM_X3)
 elseif(PLATFORM_X5)
   add_executable(hobot_hdmi
     src/example.cpp
+    src/plugin_framework.cpp
     src/image_util.cpp
     src/x5/display_utils.c
     src/x5/display_framework.cpp
@@ -99,11 +101,12 @@ endif()
 
 ament_target_dependencies(
   hobot_hdmi
-  rclcpp
-  hobot_cv
+  ai_msgs
   cv_bridge
-  sensor_msgs
   hbm_img_msgs
+  hobot_cv
+  rclcpp
+  sensor_msgs
 )
 
 # Install executables

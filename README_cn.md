@@ -21,7 +21,7 @@ hbm_img_msgs为自定义消息格式，用于发布shared memory类型图像数�
 
 - 编程语言: C/C++
 - 开发平台: X3/X5/X86
-- 系统版本：Ubuntu 20.04/Ubuntu 22.0.4
+- 系统版本：Ubuntu 20.04/Ubuntu 22.04
 - 编译工具链:Linux GCC 9.3.0/Linaro GCC 11.4.0
 
 ## 编译
@@ -83,10 +83,12 @@ cp -r install/lib/hobot_hdmi/config .
 
 ## 参数
 
-| 参数名      | 含义                 | 取值                          | 默认值                |
-| ----------- | -------------------- | ----------------------------- | --------------------- |
-| ros_img_sub_topic_name   | 订阅Ros图片话题      | 字符串                         |      image_raw       |
-| is_shared_mem   | 传输数据方式          | true: 零拷贝, false: Ros话题    |      false          |
+| 参数名      | 适用平台 | 含义                 | 取值                          | 默认值                |
+| ----------- | ---- | -------------------- | ----------------------------- | --------------------- |
+| only_show_image   | X5 | 是否只展示图像      | true: 只展示图像, false: 展示图像加渲染结果(X3支持 true 模式)  |      true       |
+| ai_msg_sub_topic_name   | X5 | 订阅ai结果话题, 仅当 only_show_image 为 false有效   | 字符串                         |      /hobot_detection       |
+| ros_img_sub_topic_name   | X3, X5 | 订阅Ros图片话题      | 字符串                         |      /image       |
+| is_shared_mem   | X3, X5 | 传输数据方式          | true: 零拷贝, false: Ros话题    |      false          |
 
 
 ## 运行
@@ -154,9 +156,5 @@ root@ubuntu:/userdata# ros2 run hobot_hdmi hobot_hdmi --ros-args -p sub_img_topi
 ```
 
 以上log显示，hdmi输出分辨率为1920*1080
-
-## web效果展示
-
-
 
 # 常见问题
