@@ -1,6 +1,6 @@
 # Changelog for package hobot_hdmi
 
-tros_2.4.1 (2024-08-29)
+tros_2.4.1 (2024-08-30)
 ------------------
 1. 新增X5 hdmi 渲染功能支持, 支持mono 1080P 检测、分割、关键点、手势结果渲染。
 

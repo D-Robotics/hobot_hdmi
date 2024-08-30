@@ -144,7 +144,7 @@ def generate_launch_description():
                 'launch/display.launch.py')),
         launch_arguments={
             'display_is_shared_mem': 'True',
-            'display_only_show_image': 'False',
+            'display_only_show_image': 'True',
             'display_log_level': 'warn'
         }.items()
     )
