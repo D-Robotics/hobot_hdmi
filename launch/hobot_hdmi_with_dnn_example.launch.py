@@ -32,6 +32,9 @@ def generate_launch_description():
     image_height_launch_arg = DeclareLaunchArgument(
         "image_height", default_value=TextSubstitution(text="1080")
     )
+    config_file_launch_arg = DeclareLaunchArgument(
+        "dnn_example_config_file", default_value=TextSubstitution(text="config/fcosworkconfig.json")
+    )
 
     camera_type = os.getenv('CAM_TYPE')
     if camera_type == None:
@@ -83,7 +86,7 @@ def generate_launch_description():
         # 本地图片发布
         feedback_picture_arg = DeclareLaunchArgument(
             'publish_image_source',
-            default_value='./config',
+            default_value='./config/raw_unet.jpg',
             description='feedback picture')
 
         fb_node = IncludeLaunchDescription(
@@ -136,6 +139,21 @@ def generate_launch_description():
         camera_type_mipi = True
         camera_device_arg = mipi_cam_device_arg
 
+    # 算法pkg
+    dnn_node_example_node = Node(
+        package='dnn_node_example',
+        executable='example',
+        output='screen',
+        parameters=[
+            {"config_file": LaunchConfiguration('dnn_example_config_file')},
+            {"dump_render_img": 0},
+            {"feed_type": 1},
+            {"is_shared_mem_sub": 1},
+            {"msg_pub_topic_name": "hobot_detection"}
+        ],
+        arguments=['--ros-args', '--log-level', 'warn']
+    )
+
     # hdmi节点
     hdmi_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -144,7 +162,7 @@ def generate_launch_description():
                 'launch/display.launch.py')),
         launch_arguments={
             'display_is_shared_mem': 'True',
-            'display_only_show_image': 'True',
+            'display_only_show_image': 'False',
             'display_log_level': 'warn'
         }.items()
     )
@@ -159,6 +177,7 @@ def generate_launch_description():
     if camera_type_mipi:
         return LaunchDescription([
             camera_device_arg,
+            config_file_launch_arg,
             image_width_launch_arg,
             image_height_launch_arg,
             # 启动零拷贝环境配置node
@@ -166,11 +185,13 @@ def generate_launch_description():
             # 图片发布pkg
             cam_node,
             # 启动hdmi pkg
-            hdmi_node
+            hdmi_node,
+            dnn_node_example_node
         ])
     else:
         return LaunchDescription([
             camera_device_arg,
+            config_file_launch_arg,
             image_width_launch_arg,
             image_height_launch_arg,
             # 启动零拷贝环境配置node
@@ -180,5 +201,6 @@ def generate_launch_description():
             # 图片编解码
             nv12_codec_node,
             # 启动hdmi pkg
-            hdmi_node
+            hdmi_node,
+            dnn_node_example_node
         ])

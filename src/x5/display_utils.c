@@ -22,8 +22,10 @@ static uint32_t get_bpp_from_format(uint32_t format)
     case DRM_FORMAT_XBGR1555:
         return 16; // 16 bits per pixel (1 bit alpha, 5 bits per RGB)
     case DRM_FORMAT_ARGB8888:
+    case DRM_FORMAT_RGBA8888:
     case DRM_FORMAT_XRGB8888:
     case DRM_FORMAT_ABGR8888:
+    case DRM_FORMAT_BGRA8888:
     case DRM_FORMAT_XBGR8888:
         return 32; // 32 bits per pixel (8 bits per channel)
     case DRM_FORMAT_RGB888:
@@ -527,6 +529,15 @@ uint32_t get_framebuffer(x5_drm_context_t *ctx, int dma_buf_fd, int plane_index)
         handles[0] = prime_handle.handle;
         strides[0] = ctx->planes[plane_index].src_w * 3;
         offsets[0] = 0;
+    } else if (strcmp(ctx->planes[plane_index].format, "AR24") == 0 ||
+                strcmp(ctx->planes[plane_index].format, "RA24") == 0 ||
+                strcmp(ctx->planes[plane_index].format, "AG24") == 0 ||
+                strcmp(ctx->planes[plane_index].format, "GA24") == 0 ||
+                strcmp(ctx->planes[plane_index].format, "BA24") == 0 ||
+                strcmp(ctx->planes[plane_index].format, "AB24") == 0) {
+        handles[0] = prime_handle.handle;
+        strides[0] = ctx->planes[plane_index].src_w * 4;
+        offsets[0] = 0;       
     }
 
     uint32_t fb_id;
@@ -597,148 +608,7 @@ int drm_display_frame(x5_drm_context_t *ctx, int dma_buf_fds[MAX_PLANES])
     return 0;
 }
 
-int get_nv12_frame(x5_drm_context_t *ctx, const uint8_t *nv12_data, const int width, const int height) {
-
-    const size_t y_plane_size = width * height;
-    const size_t uv_plane_size = width * height / 2;
-    const size_t nv12_size = y_plane_size + uv_plane_size;
-
-    struct drm_prime_handle prime_handle;
-    struct drm_mode_create_dumb create_dumb;
-    struct drm_mode_map_dumb map_dumb;
-    struct drm_mode_destroy_dumb destroy_dumb;
-
-    // 分配一个 GEM 对象
-    memset(&create_dumb, 0, sizeof(create_dumb));
-    create_dumb.width = width; // 根据需要调整宽度
-    create_dumb.height = height; // 根据需要调整高度
-    create_dumb.bpp = 12; // 每个像素的位数，根据需要调整
-    create_dumb.flags = DRM_FORMAT_NV12;
-    create_dumb.size = nv12_size;
-
-    if (drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_CREATE_DUMB, &create_dumb)) {
-        perror("ioctl DRM_IOCTL_MODE_CREATE_DUMB failed");
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    // 准备导出 GEM 对象为 dma-buf 文件描述符
-    memset(&prime_handle, 0, sizeof(prime_handle));
-    prime_handle.handle = create_dumb.handle;
-    prime_handle.flags = 0;
-
-    if (drmIoctl(ctx->drm_fd, DRM_IOCTL_PRIME_HANDLE_TO_FD, &prime_handle)) {
-        perror("ioctl DRM_IOCTL_PRIME_HANDLE_TO_FD failed");
-        // 清理创建的 dumb buffer
-        memset(&destroy_dumb, 0, sizeof(destroy_dumb));
-        destroy_dumb.handle = create_dumb.handle;
-        drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_DESTROY_DUMB, &destroy_dumb);
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    // prime_handle.fd 现在包含 dma-buf 文件描述符
-    int dma_buf_fd = prime_handle.fd;
-
-    // 映射缓冲区
-    memset(&map_dumb, 0, sizeof(create_dumb));
-    map_dumb.handle = create_dumb.handle;
-    if (drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb)) {
-        perror("ioctl DRM_IOCTL_MODE_MAP_DUMB failed");
-        close(dma_buf_fd);
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    // 映射内存
-    void *map = mmap(0, create_dumb.size, PROT_READ | PROT_WRITE, MAP_SHARED, ctx->drm_fd, map_dumb.offset);
-    if (map == MAP_FAILED) {
-        perror("mmap failed");
-        close(dma_buf_fd);
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    memcpy(map, nv12_data, nv12_size);
-
-    return dma_buf_fd;
-}
-
-int create_and_map_nv12_buffer(x5_drm_context_t *ctx, int width, int height, void **mapped_memory, int *dma_buf_fd) {
-    const size_t y_plane_size = width * height;
-    const size_t uv_plane_size = width * height / 2;
-    const size_t nv12_size = y_plane_size + uv_plane_size;
-
-    struct drm_prime_handle prime_handle;
-    struct drm_mode_create_dumb create_dumb;
-    struct drm_mode_map_dumb map_dumb;
-    struct drm_mode_destroy_dumb destroy_dumb;
-
-    // 分配一个 GEM 对象
-    memset(&create_dumb, 0, sizeof(create_dumb));
-    create_dumb.width = width;
-    create_dumb.height = height;
-    create_dumb.bpp = 12;
-    create_dumb.flags = DRM_FORMAT_NV12;
-    create_dumb.size = nv12_size;
-
-    if (drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_CREATE_DUMB, &create_dumb)) {
-        perror("ioctl DRM_IOCTL_MODE_CREATE_DUMB failed");
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    // 准备导出 GEM 对象为 dma-buf 文件描述符
-    memset(&prime_handle, 0, sizeof(prime_handle));
-    prime_handle.handle = create_dumb.handle;
-    prime_handle.flags = 0;
-
-    if (drmIoctl(ctx->drm_fd, DRM_IOCTL_PRIME_HANDLE_TO_FD, &prime_handle)) {
-        perror("ioctl DRM_IOCTL_PRIME_HANDLE_TO_FD failed");
-        // 清理创建的 dumb buffer
-        memset(&destroy_dumb, 0, sizeof(destroy_dumb));
-        destroy_dumb.handle = create_dumb.handle;
-        drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_DESTROY_DUMB, &destroy_dumb);
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    *dma_buf_fd = prime_handle.fd;
-
-    // 映射缓冲区
-    memset(&map_dumb, 0, sizeof(create_dumb));
-    map_dumb.handle = create_dumb.handle;
-    if (drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb)) {
-        perror("ioctl DRM_IOCTL_MODE_MAP_DUMB failed");
-        close(*dma_buf_fd);
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    // 映射内存
-    *mapped_memory = mmap(0, create_dumb.size, PROT_READ | PROT_WRITE, MAP_SHARED, ctx->drm_fd, map_dumb.offset);
-    if (*mapped_memory == MAP_FAILED) {
-        perror("mmap failed");
-        close(*dma_buf_fd);
-        close(ctx->drm_fd);
-        return -1;
-    }
-
-    return 0;
-}
-
-void update_nv12_buffer(void *mapped_memory, const uint8_t *nv12_data, const int width, const int height) {
-    const size_t y_plane_size = width * height;
-    const size_t uv_plane_size = width * height / 2;
-    const size_t nv12_size = y_plane_size + uv_plane_size;
-
-    memcpy(mapped_memory, nv12_data, nv12_size);
-}
-
 int create_and_map_buffer(x5_drm_context_t *ctx, int plane_index, void **mapped_memory, int *dma_buf_fd) {
-    const size_t y_plane_size = ctx->planes[plane_index].src_w * ctx->planes[plane_index].src_h;
-    const size_t uv_plane_size = ctx->planes[plane_index].src_w * ctx->planes[plane_index].src_h / 2;
-    const size_t nv12_size = y_plane_size + uv_plane_size;
     uint32_t format = get_format_from_string(ctx->planes[plane_index].format);
     uint32_t bpp = get_bpp_from_format(format);
 

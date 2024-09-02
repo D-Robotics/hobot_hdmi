@@ -81,11 +81,12 @@ cp -r install/lib/hobot_hdmi/config .
 
 ## Parameters
 
-| Parameter   | Meaning              | Value                         | Default               |
-| ----------- | -------------------- | ----------------------------- | --------------------- |
-| ros_img_sub_topic_name   | Subscribed Ros Image Topic | String                    |      image_raw       |
-| is_shared_mem   | Data Transfer Method    | true: zero copy, false: Ros image topic |      false          |
-
+| Parameter   | Platform | Meaning              | Value                         | Default               |
+| ----------- | ---- | -------------------- | ----------------------------- | --------------------- |
+| only_show_image   | X5 | is show image only      | true: show image, false: show image with render(X3 only support true)  |      true       |
+| ai_msg_sub_topic_name   | X5 | Subscribed Ai msg Topic | String                    |      /hobot_detection       |
+| ros_img_sub_topic_name   | X3, X5 | Subscribed Ros Image Topic | String                    |      /image       |
+| is_shared_mem   | X3, X5 | Data Transfer Method    | true: zero copy, false: Ros image topic |      false          |
 
 ## Execution
 
@@ -154,8 +155,5 @@ root@ubuntu:/userdata# ros2 run hobot_hdmi hobot_hdm --ros-args -p sub_img_topic
 ```
 
 The log above shows that the HDMI output resolution is 1920*1080
-
-## Web Display Effects
-
 
 # Frequently Asked Questions
