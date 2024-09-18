@@ -647,7 +647,7 @@ int create_and_map_buffer(x5_drm_context_t *ctx, int plane_index, void **mapped_
     *dma_buf_fd = prime_handle.fd;
 
     // 映射缓冲区
-    memset(&map_dumb, 0, sizeof(create_dumb));
+    memset(&map_dumb, 0, sizeof(map_dumb));
     map_dumb.handle = create_dumb.handle;
     if (drmIoctl(ctx->drm_fd, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb)) {
         perror("ioctl DRM_IOCTL_MODE_MAP_DUMB failed");
