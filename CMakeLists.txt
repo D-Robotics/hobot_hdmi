@@ -41,7 +41,7 @@ find_package(hobot_cv REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
-find_package(OpenCV 3.4.5 REQUIRED)
+find_package(OpenCV 4 REQUIRED)
 
 add_definitions(-DSHARED_MEM_ENABLED)
 
@@ -97,7 +97,7 @@ elseif(PLATFORM_X5)
     src/x5/common_utils.c
   )
   target_link_libraries(hobot_hdmi
-    pthread cjson dl drm alog hbmem cam vpf opencv_core
+    pthread cjson dl drm alog hbmem cam vpf 
   )
 endif()
 
@@ -109,6 +109,7 @@ ament_target_dependencies(
   hobot_cv
   rclcpp
   sensor_msgs
+  OpenCV
 )
 
 # Install executables
