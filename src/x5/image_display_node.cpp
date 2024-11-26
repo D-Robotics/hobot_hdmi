@@ -238,6 +238,7 @@ int ImageDisplay::Run() {
     std::unique_lock<std::mutex> lock(map_smart_mutex_);
     map_smart_condition_.wait(lock);
 
+    display_framework_->Run();
     if (only_show_image_) {
       while (!frames_.empty()) {
         auto frame = frames_.top();
